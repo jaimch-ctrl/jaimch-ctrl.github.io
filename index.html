@@ -315,8 +315,13 @@ function cPresetStart(i){
   const c7 = +document.getElementById('c_sv7').value || 0;
   const c8 = +document.getElementById('c_sv8').value || 0;
   const c9 = +document.getElementById('c_sv9').value || 0;
-  const arr = [c0,c5,c6,c7,c8,c9];
-  if(i < arr.length) return arr[i];
+
+  // 115年~120年對應起始值
+  const arr = [c0, c5, c6, c7, c8, c9];
+
+  if (i < arr.length) return arr[i];
+
+  // 超過後就接前一年的期末
   return null;
 }
 function cPresetEnd(i){
@@ -377,18 +382,19 @@ function recalc(){
   bInt = bStart * B.rate;
 }
 
-    // C
+      // C
     let cStart;
     let cInt;
-    if(i < 9){
-      cStart = cPresetStart(i);
-      const cEndPlan = cPresetEnd(i);
-      cInt = Math.max(0, cEndPlan - cStart);
-    }else{
-      cStart = cBal;
-      const cEndPlan = cPresetEnd(i);
-      cInt = Math.max(0, cEndPlan - cStart);
+    const cEndPlan = cPresetEnd(i);
+
+    if (i === 0) {
+      cStart = cPresetStart(0);
+    } else {
+      // 一律接前一年的期末，不要讓它掉成 0 / null
+      cStart = rows[i - 1].cEnd;
     }
+
+    cInt = Math.max(0, cEndPlan - cStart);
 
     let need = TARGET_USD;
     let take = {A_int:0,A_pr:0,B_int:0,B_pr:0,C_int:0,C_pr:0};
