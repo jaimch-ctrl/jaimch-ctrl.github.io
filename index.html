@@ -365,12 +365,17 @@ function recalc(){
     // B
     let bStart, bInt;
     if(i < 5){
-      bStart = B_FIXED_START[i];
-      bInt = B_FIXED_INT[i];
-    }else{
-      bStart = bBal;
-      bInt = bStart * B.rate;
-    }
+  bStart = B_FIXED_START[i];
+  bInt = B_FIXED_INT[i];
+}else if(i === 5){
+  // 第6年先承接前5年最後一筆固定本金
+  bStart = B_FIXED_START[4];
+  bInt = B_FIXED_INT[4];
+}else{
+  // 第7年開始才接前一年期末
+  bStart = rows[i-1].bEnd;
+  bInt = bStart * B.rate;
+}
 
     // C
     let cStart;
